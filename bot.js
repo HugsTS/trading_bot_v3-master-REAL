@@ -1,3 +1,5 @@
+require("dotenv").config(); 
+
 const WebSocket = require('ws');
 
 function connectWS() {
