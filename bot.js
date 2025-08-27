@@ -204,7 +204,8 @@ const determineProfitability = async (_exchangePath, _token0, _token1) => {
     const amountDifference = amountOut - amountIn
     const estimatedGasCost = GAS_LIMIT * GAS_PRICE
 
-    const account = new ethers.Wallet(process.env.PRIVATE_KEY, provider)
+    const pk = process.env.PRIVATE_KEY.startsWith('0x') ? process.env.PRIVATE_KEY.slice(2) : process.env.PRIVATE_KEY;
+    const account = new ethers.Wallet(pk, provider);
 
     const ethBalanceBefore = ethers.formatUnits(await provider.getBalance(account.address), 18)
     const ethBalanceAfter = ethBalanceBefore - estimatedGasCost
