@@ -1,5 +1,11 @@
 require("dotenv").config(); 
 
+// For updating the bot, use the following commands in the terminal:
+//git add .git commit -m "Your update message" git push origin main
+
+// To pull the latest changes from the repository, use:
+// cd ~/trading_bot_v3-master-REAL git pull
+
 const WebSocket = require('ws');
 
 function connectWS() {
