@@ -1,3 +1,30 @@
+const WebSocket = require('ws');
+
+function connectWS() {
+  const ws = new WebSocket(process.env.ARBITRUM_RPC_URL);
+
+  ws.on('open', () => {
+    console.log('WebSocket connected');
+  });
+
+  ws.on('error', (err) => {
+    console.error('WebSocket error:', err.message);
+    if (err.message.includes('503')) {
+      console.log('Retrying WebSocket connection in 10 seconds...');
+      setTimeout(connectWS, 10000);
+    }
+  });
+
+  ws.on('close', () => {
+    console.log('WebSocket closed. Reconnecting in 10 seconds...');
+    setTimeout(connectWS, 10000);
+  });
+}
+
+connectWS();
+
+
+
 require("dotenv").config()
 require('./helpers/server')
 require("dotenv").config();
