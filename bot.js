@@ -10,8 +10,6 @@ process.on('unhandledRejection', (reason, promise) => {
   // Optionally, clean up resources here
   // Do NOT use process.exit() here, let pm2 handle restarts
 });
-
-s
 if (!process.env.ARBITRUM_RPC_URL) {
   console.error("ARBITRUM_RPC_URL is not set in .env! Bot will exit.");
   process.exit(1);
