@@ -1,4 +1,16 @@
 require("dotenv").config();
+
+require("dotenv").config();
+
+const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
+if (!ALCHEMY_API_KEY) {
+  console.error("ALCHEMY_API_KEY is not set in .env! Bot will exit.");
+  process.exit(1);
+}
+
+const ARBITRUM_RPC_URL = `wss://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
+
+
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
   // Optionally, clean up resources here
@@ -24,7 +36,7 @@ if (!process.env.ARBITRUM_RPC_URL) {
 const WebSocket = require('ws');
 
 function connectWS() {
-  const ws = new WebSocket(process.env.ARBITRUM_RPC_URL);
+const ws = new WebSocket(ARBITRUM_RPC_URL);
 
   ws.on('open', () => {
     console.log('WebSocket connected');
