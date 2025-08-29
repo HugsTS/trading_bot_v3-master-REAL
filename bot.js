@@ -22,10 +22,8 @@ process.on('unhandledRejection', (reason, promise) => {
   // Optionally, clean up resources here
   // Do NOT use process.exit() here, let pm2 handle restarts
 });
-if (!process.env.ARBITRUM_RPC_URL) {
-  console.error("ARBITRUM_RPC_URL is not set in .env! Bot will exit.");
-  process.exit(1);
-}
+
+
 
 // For updating the bot, use the following commands in the terminal:
 //git add .git commit -m "Your update message" git push origin main
