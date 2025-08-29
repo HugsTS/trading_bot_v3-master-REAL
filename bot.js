@@ -74,8 +74,6 @@ const main = async () => {
         const poolA = await getPoolContract(dexA, token0.address, token1.address, POOL_FEE, provider);
         const poolB = await getPoolContract(dexB, token0.address, token1.address, POOL_FEE, provider);
 
-        console.log(`Monitoring ${token1.symbol}/${token0.symbol} on ${dexA.name} vs ${dexB.name}`);
-
         poolA.on('Swap', () => eventHandler(poolA, poolB, token0, token1, dexA, dexB));
         poolB.on('Swap', () => eventHandler(poolA, poolB, token0, token1, dexA, dexB));
       }
