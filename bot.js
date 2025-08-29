@@ -1,6 +1,5 @@
 require("dotenv").config();
-
-require("dotenv").config();
+const { WebSocketProvider } = require("ethers"); // <-- Add this here
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 if (!ALCHEMY_API_KEY) {
@@ -9,6 +8,8 @@ if (!ALCHEMY_API_KEY) {
 }
 
 const ARBITRUM_RPC_URL = `wss://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
+const provider = new WebSocketProvider(ARBITRUM_RPC_URL); 
+
 
 
 process.on('uncaughtException', (err) => {
@@ -31,32 +32,6 @@ process.on('unhandledRejection', (reason, promise) => {
 // To pull the latest changes from the repository, use:
 // cd ~/trading_bot_v3-master-REAL git pull
 
-const WebSocket = require('ws');
-
-function connectWS() {
-const ws = new WebSocket(ARBITRUM_RPC_URL);
-
-  ws.on('open', () => {
-    console.log('WebSocket connected');
-  });
-
-  ws.on('error', (err) => {
-    console.error('WebSocket error:', err.message);
-    if (err.message.includes('503')) {
-      console.log('Retrying WebSocket connection in 10 seconds...');
-      setTimeout(connectWS, 10000);
-    }
-  });
-
-  ws.on('close', () => {
-    console.log('WebSocket closed. Reconnecting in 10 seconds...');
-    setTimeout(connectWS, 10000);
-  });
-}
-
-connectWS();
-
-
 
 require("dotenv").config()
 require('./helpers/server')
@@ -68,8 +43,7 @@ const config = require('./config.json')
 const { getTokenAndContract, getPoolContract, getPoolLiquidity, calculatePrice } = require('./helpers/helpers')
 const { uniswap, pancakeswap, ramses, chronos, arbitrage } = require('./helpers/initialization')
 
-const { WebSocketProvider } = require("ethers");
-const provider = new WebSocketProvider(process.env.ARBITRUM_RPC_URL);
+
 const POOL_FEE = config.TOKENS.POOL_FEE
 const UNITS = config.PROJECT_SETTINGS.PRICE_UNITS
 const PRICE_DIFFERENCE = config.PROJECT_SETTINGS.PRICE_DIFFERENCE
