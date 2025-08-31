@@ -1,10 +1,15 @@
 require("dotenv").config();
+require('dotenv').config();
 const { WebSocketProvider } = require("ethers"); // <-- Add this here
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 if (!ALCHEMY_API_KEY) {
   console.error("ALCHEMY_API_KEY is not set in .env! Bot will exit.");
   process.exit(1);
+}
+
+if (!process.env.PRIVATE_KEY || !/^0x[a-fA-F0-9]{64}$/.test(process.env.PRIVATE_KEY.trim())) {
+  throw new Error("Invalid PRIVATE_KEY format in .env! Must be 0x followed by 64 hex chars.");
 }
 
 const ARBITRUM_RPC_URL = `wss://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
