@@ -172,7 +172,7 @@ const determineProfitability = async (_exchangePath, _token0, _token1) => {
 
   try {
     const liquidity = await getPoolLiquidity(_exchangePath[0].factory, _token0, _token1, POOL_FEE, provider)
-    const percentage = Big(0.05)
+    const percentage = Big(0.0001)
     const minAmount = Big(liquidity[1]).mul(percentage)
 
     const quoteExactOutputSingleParams = {
