@@ -1,7 +1,6 @@
 require("dotenv").config();
 require('dotenv').config();
-const { WebSocketProvider } = require("ethers"); // <-- Add this here
-
+const { WebSocketProvider } = require("ethers");
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 if (!ALCHEMY_API_KEY) {
   console.error("ALCHEMY_API_KEY is not set in .env! Bot will exit.");
@@ -19,14 +18,13 @@ const provider = new WebSocketProvider(ARBITRUM_RPC_URL);
 
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
-  // Optionally, clean up resources here
+
   // Do NOT use process.exit() here, let pm2 handle restarts
 });
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection:', reason);
-  // Optionally, clean up resources here
-  // Do NOT use process.exit() here, let pm2 handle restarts
+
 });
 
 

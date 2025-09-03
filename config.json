@@ -4,9 +4,9 @@
         "isDeployed": true,
         "ARBITRAGE_ADDRESS": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
         "PRICE_UNITS": 0,
-        "PRICE_DIFFERENCE": 0.1,
+        "PRICE_DIFFERENCE": 0.2,
         "GAS_LIMIT": 450000,
-        "GAS_PRICE": 5e-9
+        "GAS_PRICE": 1e-9
     },
 "PAIRS": [
 { "FOR": "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9", "AGAINST": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f" },
