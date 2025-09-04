@@ -286,7 +286,8 @@ const executeTrade = async (_exchangePath, _token0, _token1, _amount) => {
 }
 
 async function getCurrentGasPrice() {
-  const gasPrice = await provider.getGasPrice();
+  // ethers v6 does not have getGasPrice(), use send instead
+  const gasPrice = await provider.send("eth_gasPrice", []);
   return Number(gasPrice); // returns in wei
 }
 
