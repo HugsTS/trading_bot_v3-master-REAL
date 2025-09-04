@@ -57,16 +57,13 @@ const dexes = [uniswap, pancakeswap];
 
 let MIN_PROFIT = 0.001; // Default minimum profit in ETH
 
-async function updateMinProfitThreshold() {
-  const gasPrice = await getCurrentGasPrice(); // in wei
-  // Convert gas price to ETH and estimate cost for one trade
-  const estimatedGasCost = GAS_LIMIT * gasPrice / 1e18; // GAS_LIMIT is in units, gasPrice in wei
-  // Add a buffer for volatility (e.g., 2x gas cost)
-  MIN_PROFIT = estimatedGasCost * 2;
+async function updateMinProfitThreshold(priceDifference) {
+  const gasPrice = await getCurrentGasPrice();
+  const estimatedGasCost = GAS_LIMIT * gasPrice / 1e18;
+  // If price difference is small, require higher profit to avoid risk
+  MIN_PROFIT = estimatedGasCost * (priceDifference < 1 ? 3 : 2);
   console.log(`Updated minimum profit threshold: ${MIN_PROFIT} ETH`);
 }
-
-// Call this before each trade simulation
 
 const main = async () => {
   for (const pair of pairs) {
@@ -307,7 +304,8 @@ async function findAdaptiveTradeSize(_exchangePath, _token0, _token1, liquidity)
   if (recentFailedTrades > 2) basePercentages = [0.0001, 0.0005, 0.001]; // Be more conservative
   if (recentVolatility > 1.0) basePercentages = [0.01, 0.05, 0.1]; // Be more aggressive
 
-  let best = { profit: -Infinity, amount: 0 };
+  let best = { profit: -Infinity, amount: 0, details: {} };
+  let gasPrice = await getCurrentGasPrice(); // Use real-time gas price
 
   for (const pct of basePercentages) {
     const minAmount = Big(liquidity[1]).mul(pct);
@@ -332,17 +330,25 @@ async function findAdaptiveTradeSize(_exchangePath, _token0, _token1, liquidity)
 
       const amountIn = Number(ethers.formatUnits(token0Needed, _token0.decimals));
       const amountOut = Number(ethers.formatUnits(token0Returned, _token0.decimals));
-      const estimatedGasCost = GAS_LIMIT * GAS_PRICE;
+      const estimatedGasCost = GAS_LIMIT * gasPrice / 1e18;
+      const slippage = ((amountOut - amountIn) / amountIn) * 100;
       const profit = amountOut - amountIn - estimatedGasCost;
+
+      // Log simulation
+      console.log(`Simulated pct: ${pct}, amountIn: ${amountIn}, amountOut: ${amountOut}, profit: ${profit}, slippage: ${slippage}%`);
 
       // Update stats: treat as success if profit > 0
       updateTradeStats(profit > 0, recentVolatility);
 
-      if (profit > best.profit) {
-        best = { profit, amount: ethers.parseUnits(amountIn.toString(), _token0.decimals) };
+      // Only consider trades with reasonable slippage (<1%)
+      if (profit > best.profit && slippage > -1) {
+        best = {
+          profit,
+          amount: ethers.parseUnits(amountIn.toString(), _token0.decimals),
+          details: { pct, amountIn, amountOut, estimatedGasCost, slippage }
+        };
       }
     } catch (err) {
-      // Update stats: treat as failed simulation
       updateTradeStats(false, recentVolatility);
       continue;
     }
