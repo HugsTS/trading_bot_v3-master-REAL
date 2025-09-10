@@ -1,8 +1,16 @@
 require('dotenv').config();
+
 const { WebSocketProvider } = require("ethers");
-const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
-if (!ALCHEMY_API_KEY) {
-  console.error("ALCHEMY_API_KEY is not set in .env! Bot will exit.");
+
+// Prefer ARBITRUM_RPC_URL from .env, fallback to Alchemy if not set
+const ARBITRUM_RPC_URL = process.env.ARBITRUM_RPC_URL 
+  ? process.env.ARBITRUM_RPC_URL 
+  : (process.env.ALCHEMY_API_KEY 
+      ? `wss://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}` 
+      : null);
+
+if (!ARBITRUM_RPC_URL) {
+  console.error("ARBITRUM_RPC_URL or ALCHEMY_API_KEY is not set in .env! Bot will exit.");
   process.exit(1);
 }
 
@@ -10,10 +18,7 @@ if (!process.env.PRIVATE_KEY || !/^0x[a-fA-F0-9]{64}$/.test(process.env.PRIVATE_
   throw new Error("Invalid PRIVATE_KEY format in .env! Must be 0x followed by 64 hex chars.");
 }
 
-const ARBITRUM_RPC_URL = `wss://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
-const provider = new WebSocketProvider(ARBITRUM_RPC_URL); 
-
-
+const provider = new WebSocketProvider(ARBITRUM_RPC_URL);
 
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
@@ -26,14 +31,11 @@ process.on('unhandledRejection', (reason, promise) => {
 
 });
 
-
-
 // For updating the bot, use the following commands in the terminal:
 //git add .git commit -m "Your update message" git push origin main
 
 // To pull the latest changes from the repository, use:
 // cd ~/trading_bot_v3-master-REAL git pull
-
 
 require("dotenv").config()
 require('./helpers/server')
