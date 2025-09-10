@@ -57,7 +57,7 @@ let isExecuting = false
 const pairs = config.PAIRS;
 const dexes = [uniswap, pancakeswap];
 
-let MIN_PROFIT = 0.001; // Default minimum profit in ETH
+let MIN_PROFIT = 0.00005; // Lower threshold
 
 async function updateMinProfitThreshold(priceDifference) {
   const gasPrice = await getCurrentGasPrice();
@@ -303,7 +303,7 @@ function updateTradeStats(success, volatility) {
 }
 
 async function findAdaptiveTradeSize(_exchangePath, _token0, _token1, liquidity) {
-  let basePercentages = [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1];
+  let basePercentages = [0.001, 0.005, 0.01, 0.05, 0.1, 0.2];
   if (recentFailedTrades > 2) basePercentages = [0.0001, 0.0005, 0.001]; // Be more conservative
   if (recentVolatility > 1.0) basePercentages = [0.01, 0.05, 0.1]; // Be more aggressive
 
